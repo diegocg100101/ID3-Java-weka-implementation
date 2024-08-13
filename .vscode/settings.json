@@ -1,0 +1,10 @@
+{
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "/home/diego/MachineLearning/libraries/weka.jar",
+        "/home/diego/MachineLearning/libraries/mtj-1.0.4.jar"
+    ],
+    "java.project.sourcePaths": [
+        "src"
+    ]
+}

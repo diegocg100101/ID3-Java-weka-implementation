@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Nodo",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.Nodo",
+            "projectName": "ID3_2faab10c"
+        },
+        {
+            "type": "java",
+            "name": "ID3",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.ID3",
+            "projectName": "ID3_2faab10c"
+        },
+        {
+            "type": "java",
+            "name": "Nodo",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.Nodo",
+            "projectName": "ID3_68fcde4d"
+        },
+        {
+            "type": "java",
+            "name": "ID3",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.ID3",
+            "projectName": "ID3_68fcde4d"
+        },
+        {
+            "type": "java",
+            "name": "Ejecuta WEKA",
+            "request": "launch",
+            "mainClass": "weka.gui.GUIChooser"
+        },
+        {
+            "type": "java",
+            "name": "Launch ID3",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.ID3",
+            "projectName": "ID3_3292ad2f"
+        }
+    ]
+}

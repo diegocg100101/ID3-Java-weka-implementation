@@ -15,27 +15,17 @@ public class Nodo {
     String rama;
     String valor;
     ArrayList<Nodo> hijos;
-    double ganancia;
 
     Nodo(Attribute at) { // Árbol
         atributo = at;
         valor = "";
         hijos = new ArrayList<Nodo>();
-        ganancia = 0.0;
-    }
-
-    Nodo(Attribute at, double G) { // Árbol
-        atributo = at;
-        valor = "";
-        hijos = new ArrayList<Nodo>();
-        ganancia = G;
     }
 
     Nodo(String val) { // Hoja
         atributo = null;
         valor = val;
         hijos = null;
-        ganancia = 0.0;
     }
  
     void AgregaHijo(Nodo hijo, String val) {

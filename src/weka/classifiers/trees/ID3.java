@@ -3,15 +3,10 @@
  */
 package weka.classifiers.trees;
 
-import java.util.ArrayList;
-
-import org.w3c.dom.Attr;
-
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.core.pmml.jaxbbindings.InstanceField;
 import weka.core.Attribute;
 
 /**
@@ -81,7 +76,6 @@ public class ID3 extends AbstractClassifier {
 		return new Nodo(BATCH_SIZE_DEFAULT);
 	}
 
-
 	/**
 	 * Método que encuentra el atributo con mayor ganancia en un conjunto de datos
 	 * @param datos Instancias
@@ -135,6 +129,7 @@ public class ID3 extends AbstractClassifier {
 	@Override
 	public double classifyInstance(Instance ejemplo) throws Exception {
 		String valor = raiz.Evalua(ejemplo);
+		clase = Double.parseDouble(valor);
 		return clase;
 	}
 

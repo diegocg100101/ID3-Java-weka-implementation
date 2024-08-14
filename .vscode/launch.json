@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ID3",
+            "request": "launch",
+            "mainClass": "weka.classifiers.trees.ID3",
+            "projectName": "ID3-Java-weka-implementation_4e43267c"
+        },
+        {
+            "type": "java",
             "name": "Nodo",
             "request": "launch",
             "mainClass": "weka.classifiers.trees.Nodo",

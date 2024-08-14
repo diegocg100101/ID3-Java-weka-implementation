@@ -5,10 +5,13 @@ package weka.classifiers.trees;
 
 import java.util.ArrayList;
 
+import org.w3c.dom.Attr;
+
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.pmml.jaxbbindings.InstanceField;
 import weka.core.Attribute;
 
 /**
@@ -31,23 +34,60 @@ public class ID3 extends AbstractClassifier {
 	@Override
 	public void buildClassifier(Instances datos) throws Exception {
 
-		arbol(datos);
-
-		// Comparar los demás atributos con el siguiente nodo
-		for(int i = 0; i < raiz.atributo.numValues(); i ++){
-			Instances datosNuevos = new Instances(datos);
-			for(int j = 0; j < datosNuevos.size(); j ++){
-				if(datosNuevos.get(j).value(raiz.atributo) != i){
-					datosNuevos.delete(j);
-				}
-			}
-			System.out.println(datosNuevos);
-		}
+		raiz = arbol(datos);
 
 		clase = datos.get(0).value(datos.get(0).classAttribute());
 	}
 
-	private void arbol(Instances datos) {
+	/**
+	 * Método que construye el árbol
+	 * @param datos Instancias
+	 * @return Nodo raiz del árbol
+	 */
+	public Nodo arbol(Instances datos){
+
+		// Recupera el mejor atributo
+		Attribute mejorAtributo = encontrarMejor(datos);
+		if(mejorAtributo != null){
+			Nodo mejor = new Nodo(mejorAtributo);
+
+			int index = 0;
+
+			// Encuentra el índice del mejor atributo
+			for(int i = 0; i < datos.numAttributes(); i ++){
+				if(datos.attribute(i).equals(mejorAtributo)){
+					index = i;
+					break;
+				}
+			}
+			for(int i = 0; i < mejorAtributo.numValues(); i++){
+				
+				// Inicializar la variable que almacenará las instancias
+				Instances nuevosDatos = new Instances(datos);
+				nuevosDatos.delete();
+		
+				// Filtro únicamente las instancias con el valor de la rama
+				for(Instance dato : datos){
+					if(dato.value(mejorAtributo) == mejorAtributo.indexOfValue(mejorAtributo.value(i))){
+						nuevosDatos.add(dato);
+					}
+				}
+				nuevosDatos.deleteAttributeAt(index);
+				Nodo subArbol = arbol(nuevosDatos);
+				mejor.AgregaHijo(subArbol, mejorAtributo.value(i));
+			}
+			return mejor;
+		}
+		return new Nodo(BATCH_SIZE_DEFAULT);
+	}
+
+
+	/**
+	 * Método que encuentra el atributo con mayor ganancia en un conjunto de datos
+	 * @param datos Instancias
+	 * @return
+	 */
+	private Attribute encontrarMejor(Instances datos) {
 		// Mayor ganancia
 		double mayorGanancia = Double.NEGATIVE_INFINITY;
 
@@ -60,9 +100,6 @@ public class ID3 extends AbstractClassifier {
 		// Inicializa arreglo de "double" con el tamaño de los atributos
 		double[] contadorClase = new double[datos.attribute(totalAtributos - 1).numValues()]; 
 
-		// Inicializa arreglo de nodos con los nombres de los atributos
-		ArrayList<Nodo> nodos = new ArrayList<Nodo>();
-
 		// Cálculo de la entropía de la clase
 		for(Instance dato : datos){
 			contadorClase[(int) dato.classValue()] ++;
@@ -70,17 +107,25 @@ public class ID3 extends AbstractClassifier {
 
 		double entropiaClase = calcularEntropia(contadorClase);
 
-		// Cálculo de ganancias y eleccción del nodo con mayor ganancia
+		// Inicializa la ganancia
+		double ganancia = 0.0;
+
+		// Inicializa el mejor atributo a seleccionar
+		Attribute mejorAtributo = null;
+
+		// Cálculo de ganancias y eleccción del atributo con mayor ganancia
 		for(int i = 0; i < totalAtributos - 1; i++){
-			Nodo nodo = new Nodo(datos.attribute(i), calcularGanancia(datos, datos.attribute(i), entropiaClase));
-			nodos.add(nodo);
+
+			// Calcula la ganancia 
+			ganancia = calcularGanancia(datos, datos.attribute(i), entropiaClase);
 
 			// Busca el nodo con mayor ganancia
-			if(nodo.ganancia > mayorGanancia){
-				raiz = nodo;
-				mayorGanancia = nodo.ganancia;
+			if(ganancia > mayorGanancia){
+				mejorAtributo = datos.attribute(i);
+				mayorGanancia = ganancia;
 			}
 		}
+		return mejorAtributo;
 	}
 
 	/**
@@ -132,7 +177,6 @@ public class ID3 extends AbstractClassifier {
 	 * @return 				Ganancia
 	 */
 	public double calcularGanancia(Instances datos, Attribute atributo, double entropiaTotal){
-		double ganancia;
 		double[] valores;
 		double entropias = 0.0;
 
@@ -159,7 +203,7 @@ public class ID3 extends AbstractClassifier {
 		}
 
 		// G(S, Atributo) = E_S - suma(E_ramas)
-		return ganancia = entropiaTotal + entropias;
+		return entropiaTotal + entropias;
 	}
 
 	/**

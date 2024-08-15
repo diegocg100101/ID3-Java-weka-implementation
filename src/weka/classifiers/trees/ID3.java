@@ -3,15 +3,10 @@
  */
 package weka.classifiers.trees;
 
-import java.util.ArrayList;
-
-import org.w3c.dom.Attr;
-
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
-import weka.core.pmml.jaxbbindings.InstanceField;
 import weka.core.Attribute;
 
 /**
@@ -72,9 +67,24 @@ public class ID3 extends AbstractClassifier {
 						nuevosDatos.add(dato);
 					}
 				}
-				nuevosDatos.deleteAttributeAt(index);
-				Nodo subArbol = arbol(nuevosDatos);
-				mejor.AgregaHijo(subArbol, mejorAtributo.value(i));
+				int contadorYes = 0, contadorNo = 0;
+				for(Instance dato : nuevosDatos){
+					if(dato.classValue() == 1){
+						contadorYes ++;
+					} else {
+						contadorNo ++;
+					}
+				}
+
+				if(contadorYes == nuevosDatos.size()){
+					mejor.AgregaHijo( new Nodo(datos.classAttribute().value(1)), mejorAtributo.value(i));
+				} else if (contadorNo == nuevosDatos.size()) {
+					mejor.AgregaHijo( new Nodo(datos.classAttribute().value(0)), mejorAtributo.value(i));
+				} else {
+					nuevosDatos.deleteAttributeAt(index);
+					Nodo subArbol = arbol(nuevosDatos);
+					mejor.AgregaHijo(subArbol, mejorAtributo.value(i));
+				}
 			}
 			return mejor;
 		}
@@ -135,6 +145,7 @@ public class ID3 extends AbstractClassifier {
 	@Override
 	public double classifyInstance(Instance ejemplo) throws Exception {
 		String valor = raiz.Evalua(ejemplo);
+		clase = Double.parseDouble(valor);
 		return clase;
 	}
 

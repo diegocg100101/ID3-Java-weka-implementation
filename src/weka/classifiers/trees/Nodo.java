@@ -15,27 +15,17 @@ public class Nodo {
     String rama;
     String valor;
     ArrayList<Nodo> hijos;
-    double ganancia;
 
     Nodo(Attribute at) { // Árbol
         atributo = at;
         valor = "";
         hijos = new ArrayList<Nodo>();
-        ganancia = 0.0;
-    }
-
-    Nodo(Attribute at, double G) { // Árbol
-        atributo = at;
-        valor = "";
-        hijos = new ArrayList<Nodo>();
-        ganancia = G;
     }
 
     Nodo(String val) { // Hoja
         atributo = null;
         valor = val;
         hijos = null;
-        ganancia = 0.0;
     }
  
     void AgregaHijo(Nodo hijo, String val) {
@@ -121,34 +111,6 @@ public class Nodo {
             res += valor;
         }
         return res;
-    }
-
-    public static void main(String[] args) throws Exception {
-        // Lee datos de tenis
-		DataSource source = new DataSource("weather.nominal.arff");
-		Instances datos = source.getDataSet();
-        // Crea arbol Tenis
-        Nodo si = new Nodo("Si");
-        Nodo no = new Nodo("No");
-        Nodo hum = new Nodo(datos.get(0).attribute(2)); // El 2 es humedad
-        hum.AgregaHijo(no, "high");
-        hum.AgregaHijo(si, "normal");
-        Nodo wind = new Nodo(datos.get(0).attribute(3)); // El 3 es wind
-        wind.AgregaHijo(no, "TRUE");
-        wind.AgregaHijo(si, "FALSE");
-        // Nodo raiz
-        Nodo raiz = new Nodo(datos.get(0).attribute(0)); // 0 es outlook
-        raiz.AgregaHijo(hum, "sunny");
-        raiz.AgregaHijo(si, "overcast");
-        raiz.AgregaHijo(wind, "rainy");
-
-        System.out.println(raiz);
-
-        for (Instance ins : datos) {
-            String c = raiz.Evalua(ins);
-            System.out.println(ins.toString() + "->" + c );
-        }
-        
     }
 }
 

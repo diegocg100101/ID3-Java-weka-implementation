@@ -67,6 +67,8 @@ public class ID3 extends AbstractClassifier {
 						nuevosDatos.add(dato);
 					}
 				}
+
+				// Cuenta los valores para las clases "sí" y "no"
 				int contadorYes = 0, contadorNo = 0;
 				for(Instance dato : nuevosDatos){
 					if(dato.classValue() == 1){
@@ -76,6 +78,7 @@ public class ID3 extends AbstractClassifier {
 					}
 				}
 
+				// Verifica que los contadores sean o no iguales al tamaño de las instancias, de ser así, se agrega una hoja
 				if(contadorYes == nuevosDatos.size()){
 					mejor.AgregaHijo( new Nodo(datos.classAttribute().value(1)), mejorAtributo.value(i));
 				} else if (contadorNo == nuevosDatos.size()) {

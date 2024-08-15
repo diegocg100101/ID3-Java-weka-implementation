@@ -15,9 +15,8 @@ import weka.core.Attribute;
 public class ID3 extends AbstractClassifier {
 
 	/**
-	 * variables globales
+	 * Variable global del nodo raíz del árbol para evaluar
 	 */
-	double clase;
 	Nodo raiz;
 
 	private static final long serialVersionUID = 1789045553777829235L;
@@ -28,10 +27,9 @@ public class ID3 extends AbstractClassifier {
 	 */
 	@Override
 	public void buildClassifier(Instances datos) throws Exception {
-
+		// Llama a la función "arbol()" para construir el árbol
 		raiz = arbol(datos);
-
-		clase = datos.get(0).value(datos.get(0).classAttribute());
+		System.out.println(raiz);
 	}
 
 	/**
@@ -43,9 +41,12 @@ public class ID3 extends AbstractClassifier {
 
 		// Recupera el mejor atributo
 		Attribute mejorAtributo = encontrarMejor(datos);
+
+		// Valida que el nodo recibido no sea nulo
 		if(mejorAtributo != null){
 			Nodo mejor = new Nodo(mejorAtributo);
 
+			// Inicializa índice
 			int index = 0;
 
 			// Encuentra el índice del mejor atributo
@@ -55,6 +56,8 @@ public class ID3 extends AbstractClassifier {
 					break;
 				}
 			}
+
+			// Itera los valores del mejor atributo
 			for(int i = 0; i < mejorAtributo.numValues(); i++){
 				
 				// Inicializar la variable que almacenará las instancias
@@ -78,7 +81,7 @@ public class ID3 extends AbstractClassifier {
 					}
 				}
 
-				// Verifica que los contadores sean o no iguales al tamaño de las instancias, de ser así, se agrega una hoja
+				// Verifica que los contadores sean o no iguales al tamaño de las instancias, de ser así, se agrega una hoja en lugar de un sub-árbol
 				if(contadorYes == nuevosDatos.size()){
 					mejor.AgregaHijo( new Nodo(datos.classAttribute().value(1)), mejorAtributo.value(i));
 				} else if (contadorNo == nuevosDatos.size()) {
@@ -89,9 +92,12 @@ public class ID3 extends AbstractClassifier {
 					mejor.AgregaHijo(subArbol, mejorAtributo.value(i));
 				}
 			}
+
+			// Regresa el nodo incial con los hijos agregados
 			return mejor;
 		}
-		return new Nodo(BATCH_SIZE_DEFAULT);
+		// Regresa un nodo sin importancia si el mejor atributo resulta null
+		return new Nodo("");
 	}
 
 	/**
@@ -100,10 +106,10 @@ public class ID3 extends AbstractClassifier {
 	 * @return
 	 */
 	private Attribute encontrarMejor(Instances datos) {
-		// Mayor ganancia
+		// Inicializa mayor ganancia con un valor infinito negativo para ser reemplazado
 		double mayorGanancia = Double.NEGATIVE_INFINITY;
 
-		// Número total de atributos
+		// Inicializa número total de atributos
 		int totalAtributos = datos.numAttributes();
 
 		// Establece la clase: play {no : 0, yes : 1}
@@ -147,13 +153,15 @@ public class ID3 extends AbstractClassifier {
 	@Override
 	public double classifyInstance(Instance ejemplo) throws Exception {
 		String valor = raiz.Evalua(ejemplo);
-		clase = Double.parseDouble(valor);
-		return clase;
+		if(valor == "no"){
+			return 0.0;
+		} 
+		return 1.0;
 	}
 
 	/**
-	 * Calcula la entropía de los valores
-	 * @param valores Arreglo de dobles que contiene el número de valores
+	 * Calcula la entropía de los valores de las clases
+	 * @param valores Arreglo de dobles que contiene el número de valores de las clases
 	 */
 	public double calcularEntropia(double[] valores) {
 		// E = -p(+) log_2 (p(+)) - p(-) log_2 (p(-))
@@ -224,7 +232,6 @@ public class ID3 extends AbstractClassifier {
 	 */
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return raiz.toString();
 	}
 	
@@ -240,7 +247,10 @@ public class ID3 extends AbstractClassifier {
 		DataSource source = new DataSource("weather.nominal.arff");
 		Instances datos = source.getDataSet();
 
+		Instance ejemplo = datos.get(2);
 		id3.buildClassifier(datos);
+		double resultado = id3.classifyInstance(ejemplo);
+		System.out.println(resultado);
 	}
 
 }

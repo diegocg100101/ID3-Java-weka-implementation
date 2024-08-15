@@ -5,8 +5,6 @@ package weka.classifiers.trees;
 
 import java.util.ArrayList;
 import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 import weka.core.Attribute;
 
 

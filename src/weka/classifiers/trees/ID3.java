@@ -91,7 +91,6 @@ public class ID3 extends AbstractClassifier {
 		return new Nodo(BATCH_SIZE_DEFAULT);
 	}
 
-
 	/**
 	 * Método que encuentra el atributo con mayor ganancia en un conjunto de datos
 	 * @param datos Instancias

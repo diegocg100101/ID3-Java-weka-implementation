@@ -29,6 +29,8 @@ public class ID3 extends AbstractClassifier {
 	public void buildClassifier(Instances datos) throws Exception {
 		// Llama a la función "arbol()" para construir el árbol
 		raiz = arbol(datos);
+
+		// Imprime el árbol de decisiones
 		System.out.println(raiz);
 	}
 
@@ -247,8 +249,11 @@ public class ID3 extends AbstractClassifier {
 		DataSource source = new DataSource("weather.nominal.arff");
 		Instances datos = source.getDataSet();
 
-		Instance ejemplo = datos.get(2);
+		// Llama al método del clasificador
 		id3.buildClassifier(datos);
+
+		// Toma una instancia del conjunto de instancias para probar el funcionamiento del método
+		Instance ejemplo = datos.get(2);
 		double resultado = id3.classifyInstance(ejemplo);
 		System.out.println(resultado);
 	}
